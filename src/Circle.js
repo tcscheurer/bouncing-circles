@@ -1,59 +1,147 @@
 import React from 'react';
+import Counter from './Counter.js'
+export default class Circle extends React.Component {
+// setup canvas
 
-function random(min,max) {
+canvas = document.querySelector('canvas');
+ctx = this.canvas.getContext('2d');
+
+width = this.canvas.width = window.innerWidth;
+height = this.canvas.height = window.innerHeight;
+
+
+
+// define circle constructor
+
+constructor(props) {
+  super(props);
+  this.x = this.random(0,this.width);
+  this.y = this.random(0,this.height);
+  this.velX = this.random(-7,7);
+  this.velY = this.random(-7,7);
+  this.color = 'rgb(' + this.random(0,255) + ',' + this.random(0,255) + ',' + this.random(0,255) +')';
+  this.size = this.random(10,20);
+  this.circles = [];
+
+  this.loop = this.loop.bind(this);
+  this.random = this.random.bind(this);
+  this.draw = this.draw.bind(this);
+  this.update = this.update.bind(this);
+  this.collisionDetect = this.collisionDetect.bind(this);
+  this.state = {
+    isRight : false,
+    isLeft : false,
+    isTop : false,
+    isBottom : false
+  };
+}
+
+// function to generate random number
+
+random(min,max) {
     let num = Math.floor(Math.random()*(max-min)) + min;
     return num;
   }
 
-export default class Circle {
-    constructor(width,height){
-        this.x = random(0,width);
-        this.y = random(0,height);
-        this.velX = random(-7,7);
-        this.velY = random(-7,7);
-        this.color = 'rgb(' + random(0,255) + ',' + random(0,255) + ',' + random(0,255) +')';
-        this.size = random(10,20);
+// define circle draw method
+
+draw() {
+  this.ctx.beginPath();
+  this.ctx.fillStyle = this.color;
+  this.ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+  this.ctx.fill();
+}
+
+// define circle update method
+
+update() {
+  this.setState({
+    isRight : false,
+    isLeft : false,
+    isTop : false,
+    isBottom : false
+  });
+  if((this.x + this.size) >= this.width) {
+    this.velX = -(this.velX);
+    this.setState({isRight : true});
+  }
+
+  if((this.x - this.size) <= 0) {
+    this.velX = -(this.velX);
+    this.setState({isLeft : true});
+
+  }
+
+  if((this.y + this.size) >= this.height) {
+    this.velY = -(this.velY);
+    this.setState({isTop : true});
+  }
+
+  if((this.y - this.size) <= 0) {
+    this.velY = -(this.velY);
+    this.setState({isBottom : true});
+
+  }
+
+  this.x += this.velX;
+  this.y += this.velY;
+}
+
+// define circle collision detection
+
+collisionDetect() {
+  for(let circle of this.circles) {
+    if( (!(this.x === circle.x && this.y === circle.y && this.velX === circle.velX && this.velY === circle.velY)) ) {
+      let dx = this.x - circle.x;
+      let dy = this.y - circle.y;
+      let distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance < this.size + circle.size) {
+        circle.color = this.color = 'rgb(' + this.random(0,255) + ',' + this.random(0,255) + ',' + this.random(0,255) +')';
+      }
     }
+  }
+}
 
-    draw(ctx) {
-        ctx.beginPath();
-        ctx.fillStyle = this.color;
-        ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
-        ctx.fill();
-      }
+// define array to store circles
 
-      update(width,height) {
-        if((this.x + this.size) >= width) {
-          this.velX = -(this.velX);
-        }
-      
-        if((this.x - this.size) <= 0) {
-          this.velX = -(this.velX);
-        }
-      
-        if((this.y + this.size) >= height) {
-          this.velY = -(this.velY);
-        }
-      
-        if((this.y - this.size) <= 0) {
-          this.velY = -(this.velY);
-        }
-      
-        this.x += this.velX;
-        this.y += this.velY;
-      }
 
-      collisionDetect(circles) {
-        for(let circle of circles) {
-          if( (!(this.x === circle.x && this.y === circle.y && this.velX === circle.velX && this.velY === circle.velY)) ) {
-            let dx = this.x - circle.x;
-            let dy = this.y - circle.y;
-            let distance = Math.sqrt(dx * dx + dy * dy);
-      
-            if (distance < this.size + circle.size) {
-              circle.color = this.color = 'rgb(' + random(0,255) + ',' + random(0,255) + ',' + random(0,255) +')';
-            }
-          }
-        }
-      }
+
+// define loop that keeps drawing the scene constantly
+
+
+loop() {
+
+  this.ctx.fillStyle = 'rgba(0,0,0,0.25)';
+  this.ctx.fillRect(0,0,this.width,this.height);
+
+  while(this.circles.length < 25) {
+    let circle = new Circle();
+    this.circles.push(circle);
+  }
+
+  for(let circle of this.circles) {
+    circle.draw();
+    circle.update();
+    circle.collisionDetect();
+  }
+ 
+  requestAnimationFrame(this.loop);
+}
+
+
+
+
+
+render(){
+  this.loop();
+  return (
+  <div>
+    <canvas></canvas>
+    <Counter isInc={this.state.isTop} isDec={this.state.isBottom}/>
+    <Counter isInc={this.state.isRight} isDec={this.state.isLeft}/>
+  </div>
+  );
+}
+
 }
