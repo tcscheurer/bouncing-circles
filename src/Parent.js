@@ -33,9 +33,7 @@ export default class Parent extends React.Component {
                 <Counter isInc={this.state.isInc}
                 isDec={this.state.isDec}
                 />
-                <Circle isDec={this.state.isDec}
-                isInc={this.state.isInc}
-                onInc={this.handleIncrease}
+                <Circle onInc={this.handleIncrease}
                 onDec={this.handleDecrease}
                 />
             </div>

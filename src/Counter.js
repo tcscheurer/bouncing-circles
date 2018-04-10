@@ -21,8 +21,7 @@ class Counter extends React.Component{
 	}
 	
 	render(){ 
-        return
-        (
+        return(
             <div>
                 <a href="#"><img src="plus.png" alt="plus"/></a>
                 <label>{this.state.count}</label>

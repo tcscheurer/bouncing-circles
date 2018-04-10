@@ -1,5 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Circle  from './Circle';
+import Parent from './Parent';
 
-ReactDOM.render(<Circle />, document.getElementById('root'));
+ReactDOM.render(<Parent />, document.getElementById('root'));

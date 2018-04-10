@@ -28,6 +28,9 @@ constructor(props) {
   this.update = this.update.bind(this);
   this.collisionDetect = this.collisionDetect.bind(this);
   
+  this.state = {
+    count : 0
+  };
 
 }
 
@@ -71,18 +74,17 @@ update() {
   }
 
   if(((this.x - this.size) <= 0) || ((this.y - this.size) <= 0)){
-    this.props.onInc(true);
-  }
-  else{
-    this.props.onInc(false);
+    this.setState({
+      count: this.state.count+1
+    })
   }
 
   if(((this.y + this.size) >= this.height) || ((this.x + this.size) >= this.width)){
-    this.props.onDec(true);
+    this.setState({
+      count : this.state.count-1
+    });
   } 
-  else{
-    this.props.onDec(false);
-  }
+  
   this.x += this.velX;
   this.y += this.velY;
 }
@@ -111,7 +113,7 @@ collisionDetect() {
 
 
 loop() {
-
+  console.log(this.ctx);
   this.ctx.fillStyle = 'rgba(0,0,0,0.25)';
   this.ctx.fillRect(0,0,this.width,this.height);
 
@@ -135,8 +137,10 @@ loop() {
 
 render(){
   this.loop();
+  console.log(this.state.count);
   return (
   <div>
+    <h1>{this.state.count}</h1>
     <canvas></canvas>
   </div>
   );
