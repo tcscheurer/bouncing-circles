@@ -9,33 +9,38 @@ export default class Parent extends React.Component {
     {
         super(props);
         this.state = {
-            isInc: false,
-            isDec: false
+            count: 0,
+            
           };
-        this.handleDecrease = this.handleDecrease.bind(this);
-        this.handleIncrease = this.handleIncrease.bind(this);
+       
+        this.handleCountUpdate = this.handleCountUpdate.bind(this);      
+         
+    }
+    
+    componentDidUpdate(prevProps, prevState){
+        if(prevState !== this.state){
+            if(prevState.count - this.state.count >= 11115 || prevState.count - this.state.count >= -11115){
+                return true;
+            }
+        }
+        return false;
     }
 
-    handleIncrease(isInc){
+    handleCountUpdate(val){
         this.setState({
-            isInc : isInc
-        });
-    }
-
-    handleDecrease(isDec){
-        this.setState({
-            isDec: isDec
-        });
+            count: this.state.count+val
+        })
     }
     render() {
+        
         return(
+            
             <div>
-                <Counter isInc={this.state.isInc}
-                isDec={this.state.isDec}
+                <h1>{this.state.count}</h1>
+                <Circle 
+                handleCountUpdate={this.handleCountUpdate}
                 />
-                <Circle onInc={this.handleIncrease}
-                onDec={this.handleDecrease}
-                />
+                <canvas />
             </div>
         );
     }

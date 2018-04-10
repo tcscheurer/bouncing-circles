@@ -10,10 +10,12 @@ height = this.canvas.height = window.innerHeight;
 
 
 
+
 // define circle constructor
 
 constructor(props) {
   super(props);
+  console.log(props)
   this.x = this.random(0,this.width);
   this.y = this.random(0,this.height);
   this.velX = this.random(-7,7);
@@ -28,13 +30,13 @@ constructor(props) {
   this.update = this.update.bind(this);
   this.collisionDetect = this.collisionDetect.bind(this);
   
-  this.state = {
-    count : 0
-  };
+  
 
 }
 
-
+shouldComponentUpdate(nextProps){
+  return false;
+}
 
 // function to generate random number
 
@@ -74,15 +76,13 @@ update() {
   }
 
   if(((this.x - this.size) <= 0) || ((this.y - this.size) <= 0)){
-    this.setState({
-      count: this.state.count+1
-    })
+    this.props.handleCountUpdate(1)
+    
   }
 
   if(((this.y + this.size) >= this.height) || ((this.x + this.size) >= this.width)){
-    this.setState({
-      count : this.state.count-1
-    });
+   this.props.handleCountUpdate(-1)
+   
   } 
   
   this.x += this.velX;
@@ -113,12 +113,12 @@ collisionDetect() {
 
 
 loop() {
-  console.log(this.ctx);
+  
   this.ctx.fillStyle = 'rgba(0,0,0,0.25)';
   this.ctx.fillRect(0,0,this.width,this.height);
 
   while(this.circles.length < 25) {
-    let circle = new Circle();
+    let circle = new Circle(this.props);
     this.circles.push(circle);
   }
 
@@ -137,12 +137,9 @@ loop() {
 
 render(){
   this.loop();
-  console.log(this.state.count);
+  
   return (
-  <div>
-    <h1>{this.state.count}</h1>
-    <canvas></canvas>
-  </div>
+    null
   );
 }
 
