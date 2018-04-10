@@ -1,5 +1,4 @@
 import React from 'react';
-import Counter from './Counter.js'
 export default class Circle extends React.Component {
 // setup canvas
 
@@ -28,13 +27,11 @@ constructor(props) {
   this.draw = this.draw.bind(this);
   this.update = this.update.bind(this);
   this.collisionDetect = this.collisionDetect.bind(this);
-  this.state = {
-    isRight : false,
-    isLeft : false,
-    isTop : false,
-    isBottom : false
-  };
+  
+
 }
+
+
 
 // function to generate random number
 
@@ -55,34 +52,37 @@ draw() {
 // define circle update method
 
 update() {
-  this.setState({
-    isRight : false,
-    isLeft : false,
-    isTop : false,
-    isBottom : false
-  });
   if((this.x + this.size) >= this.width) {
     this.velX = -(this.velX);
-    this.setState({isRight : true});
   }
 
   if((this.x - this.size) <= 0) {
     this.velX = -(this.velX);
-    this.setState({isLeft : true});
 
   }
 
   if((this.y + this.size) >= this.height) {
     this.velY = -(this.velY);
-    this.setState({isTop : true});
   }
 
   if((this.y - this.size) <= 0) {
     this.velY = -(this.velY);
-    this.setState({isBottom : true});
 
   }
 
+  if(((this.x - this.size) <= 0) || ((this.y - this.size) <= 0)){
+    this.props.onInc(true);
+  }
+  else{
+    this.props.onInc(false);
+  }
+
+  if(((this.y + this.size) >= this.height) || ((this.x + this.size) >= this.width)){
+    this.props.onDec(true);
+  } 
+  else{
+    this.props.onDec(false);
+  }
   this.x += this.velX;
   this.y += this.velY;
 }
@@ -138,8 +138,6 @@ render(){
   return (
   <div>
     <canvas></canvas>
-    <Counter isInc={this.state.isTop} isDec={this.state.isBottom}/>
-    <Counter isInc={this.state.isRight} isDec={this.state.isLeft}/>
   </div>
   );
 }
