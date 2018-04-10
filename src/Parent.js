@@ -17,6 +17,7 @@ export default class Parent extends React.Component {
          
     }
     
+    /*
     componentDidUpdate(prevProps, prevState){
         if(prevState !== this.state){
             if(prevState.count - this.state.count >= 11115 || prevState.count - this.state.count >= -11115){
@@ -25,6 +26,8 @@ export default class Parent extends React.Component {
         }
         return false;
     }
+
+    */
 
     handleCountUpdate(val){
         this.setState({
